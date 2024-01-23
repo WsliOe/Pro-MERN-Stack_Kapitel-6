@@ -1,0 +1,228 @@
+Microsoft Windows [Version 10.0.19045.3803]
+(c) Microsoft Corporation. Alle Rechte vorbehalten.
+
+C:\WINDOWS\system32>mongosh
+Current Mongosh Log ID: 65883336ab9b97b7b0619b73
+Connecting to:          mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.1.1
+Using MongoDB:          7.0.4
+Using Mongosh:          2.1.1
+
+For mongosh info see: https://docs.mongodb.com/mongodb-shell/
+
+------
+   The server generated these startup warnings when booting
+   2023-12-24T13:22:16.196+01:00: Access control is not enabled for the database. Read and write access to data and configuration is unrestricted
+------
+
+test> db.employees.drop()
+true
+test> db.employees.insertOne({_id: 1, name: {first: 'John', last: 'Doe'}, age: 44})
+{ acknowledged: true, insertedId: 1 }
+test> db.employees.insertOne({_id: 1, name: {first: 'John', last: 'Doe'}, age: 44})
+MongoServerError: E11000 duplicate key error collection: test.employees index: _id_ dup key: { _id: 1 }
+test> db.employees.insertOne({name: {first: 'John', middle: 'H', last: 'Doe'}, age: 22})
+{
+  acknowledged: true,
+  insertedId: ObjectId('658835a4ab9b97b7b0619b74')
+}
+test> db.employees.find()
+[
+  { _id: 1, name: { first: 'John', last: 'Doe' }, age: 44 },
+  {
+    _id: ObjectId('658835a4ab9b97b7b0619b74'),
+    name: { first: 'John', middle: 'H', last: 'Doe' },
+    age: 22
+  }
+]
+test> db.employees.drop()
+true
+test> db.employees.insertOne({id: 1, name: {first: 'John', last: 'Doe'}, age: 48})
+{
+  acknowledged: true,
+  insertedId: ObjectId('65883708ab9b97b7b0619b75')
+}
+test> db.employees.insertOne({id: 2, name: {first: 'Jane', last: 'Doe'}, age: 16})
+{
+  acknowledged: true,
+  insertedId: ObjectId('65883746ab9b97b7b0619b76')
+}
+test> db.employees.insertMany([{id: 3, name: {first: 'Alice', last: 'A'}, age: 32}, {id: 4, name: {first: 'Bob', last: 'B'}, age: 65},])
+{
+  acknowledged: true,
+  insertedIds: {
+    '0': ObjectId('65883800ab9b97b7b0619b77'),
+    '1': ObjectId('65883800ab9b97b7b0619b78')
+  }
+}
+test> db.employees.findOne({id: 1})
+{
+  _id: ObjectId('65883708ab9b97b7b0619b75'),
+  id: 1,
+  name: { first: 'John', last: 'Doe' },
+  age: 48
+}
+test> db.employees.find({age: {$gte: 30}})
+[
+  {
+    _id: ObjectId('65883708ab9b97b7b0619b75'),
+    id: 1,
+    name: { first: 'John', last: 'Doe' },
+    age: 48
+  },
+  {
+    _id: ObjectId('65883800ab9b97b7b0619b77'),
+    id: 3,
+    name: { first: 'Alice', last: 'A' },
+    age: 32
+  },
+  {
+    _id: ObjectId('65883800ab9b97b7b0619b78'),
+    id: 4,
+    name: { first: 'Bob', last: 'B' },
+    age: 65
+  }
+]
+test> db.employees.find({age: {$gte: 30}, 'name.last': 'Doe'})
+[
+  {
+    _id: ObjectId('65883708ab9b97b7b0619b75'),
+    id: 1,
+    name: { first: 'John', last: 'Doe' },
+    age: 48
+  }
+]
+test> db.employees.createIndex({age: 1})
+age_1
+test> db.employees.createIndex({id: 1}, {unique: true})
+id_1
+test> db.employees.insertOne({id: 1, name: {first: 'John', last: 'Doe'}, age: 48})
+MongoServerError: E11000 duplicate key error collection: test.employees index: id_1 dup key: { id: 1 }
+test> db.employees.find({}, {'name.first': 1, age: 1})
+[
+  {
+    _id: ObjectId('65883708ab9b97b7b0619b75'),
+    name: { first: 'John' },
+    age: 48
+  },
+  {
+    _id: ObjectId('65883746ab9b97b7b0619b76'),
+    name: { first: 'Jane' },
+    age: 16
+  },
+  {
+    _id: ObjectId('65883800ab9b97b7b0619b77'),
+    name: { first: 'Alice' },
+    age: 32
+  },
+  {
+    _id: ObjectId('65883800ab9b97b7b0619b78'),
+    name: { first: 'Bob' },
+    age: 65
+  }
+]
+test> db.employees.find({}, {_id: 0, 'name.first': 1, age: 1})
+[
+  { name: { first: 'John' }, age: 48 },
+  { name: { first: 'Jane' }, age: 16 },
+  { name: { first: 'Alice' }, age: 32 },
+  { name: { first: 'Bob' }, age: 65 }
+]
+test> db.employees.updateOne({id:2}, {$set: {age: 23}})
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+test> db.employees.updateOne({id:2}, {$set: {age: 23}})
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 0,
+  upsertedCount: 0
+}
+test> db.employees.updateMany({}, {$set: {organization: 'MyCompany'}})
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 4,
+  modifiedCount: 4,
+  upsertedCount: 0
+}
+test> db.employees.find()
+[
+  {
+    _id: ObjectId('65883708ab9b97b7b0619b75'),
+    id: 1,
+    name: { first: 'John', last: 'Doe' },
+    age: 48,
+    organization: 'MyCompany'
+  },
+  {
+    _id: ObjectId('65883746ab9b97b7b0619b76'),
+    id: 2,
+    name: { first: 'Jane', last: 'Doe' },
+    age: 23,
+    organization: 'MyCompany'
+  },
+  {
+    _id: ObjectId('65883800ab9b97b7b0619b77'),
+    id: 3,
+    name: { first: 'Alice', last: 'A' },
+    age: 32,
+    organization: 'MyCompany'
+  },
+  {
+    _id: ObjectId('65883800ab9b97b7b0619b78'),
+    id: 4,
+    name: { first: 'Bob', last: 'B' },
+    age: 65,
+    organization: 'MyCompany'
+  }
+]
+test> db.employees.replaceOne({id: 4}, {id: 4, name: {first: "Bobby"}, age: 66});
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+test> db.employees.find({id: 4})
+[
+  {
+    _id: ObjectId('65883800ab9b97b7b0619b78'),
+    id: 4,
+    name: { first: 'Bobby' },
+    age: 66
+  }
+]
+test> db.employees.deleteOne({id: 4})
+{ acknowledged: true, deletedCount: 1 }
+test> db.employees.count()
+DeprecationWarning: Collection.count() is deprecated. Use countDocuments or estimatedDocumentCount.
+3
+test> db.employees.aggregate([{$group: {_id: null, total_age: {$sum: '$age'}}}])
+[ { _id: null, total_age: 103 } ]
+test> db.employees.aggregate([{$group: {_id: null, count: {$sum: 1}}}])
+[ { _id: null, count: 3 } ]
+test> db.employees.insertOne({id: 4, name: {first: 'Bob', last: 'B'}, age: 64, organization: 'OtherCompany'})
+{
+  acknowledged: true,
+  insertedId: ObjectId('658847c7ab9b97b7b0619b7a')
+}
+test> db.employees.aggregate([{$group: {_id: '$organization', total_age: {$sum: '$age'}}}])
+[
+  { _id: 'MyCompany', total_age: 103 },
+  { _id: 'OtherCompany', total_age: 64 }
+]
+test> db.employees.aggregate([{$group: {_id: '$organization', average_age: {$avg: '$age'}}}])
+[
+  { _id: 'MyCompany', average_age: 34.333333333333336 },
+  { _id: 'OtherCompany', average_age: 64 }
+]
+
+
+

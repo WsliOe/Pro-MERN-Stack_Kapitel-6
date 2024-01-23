@@ -1,0 +1,126 @@
+Microsoft Windows [Version 10.0.19045.3803]
+(c) Microsoft Corporation. Alle Rechte vorbehalten.
+
+C:\WINDOWS\system32>mongosh
+Current Mongosh Log ID: 6588276a66101484ee98fce5
+Connecting to:          mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.1.1
+Using MongoDB:          7.0.4
+Using Mongosh:          2.1.1
+
+For mongosh info see: https://docs.mongodb.com/mongodb-shell/
+
+------
+   The server generated these startup warnings when booting
+   2023-12-24T13:22:16.196+01:00: Access control is not enabled for the database. Read and write access to data and configuration is unrestricted
+------
+
+test> show databases
+admin   40.00 KiB
+config  60.00 KiB
+local   72.00 KiB
+test> db
+test
+test> show collections
+
+test> use issuetracker
+switched to db issuetracker
+issuetracker> show collections
+
+issuetracker> db.employees.insertOne({name: {first: 'John', last: 'Doe'}, age: 44})
+{
+  acknowledged: true,
+  insertedId: ObjectId('658828c266101484ee98fce6')
+}
+issuetracker> db.employees.
+db.employees.__proto__                        db.employees.constructor
+db.employees.hasOwnProperty                   db.employees.isPrototypeOf
+db.employees.propertyIsEnumerable             db.employees.toLocaleString
+db.employees.toString                         db.employees.valueOf
+db.employees.aggregate                        db.employees.bulkWrite
+db.employees.countDocuments                   db.employees.deleteMany
+db.employees.deleteOne                        db.employees.distinct
+db.employees.estimatedDocumentCount           db.employees.find
+db.employees.findOne                          db.employees.renameCollection
+db.employees.findOneAndDelete                 db.employees.findOneAndReplace
+db.employees.findOneAndUpdate                 db.employees.insertMany
+db.employees.insertOne                        db.employees.isCapped
+db.employees.replaceOne                       db.employees.updateMany
+db.employees.updateOne                        db.employees.compactStructuredEncryptionData
+db.employees.convertToCapped                  db.employees.createIndexes
+db.employees.createIndex                      db.employees.ensureIndex
+db.employees.getIndexes                       db.employees.getIndexSpecs
+db.employees.getIndices                       db.employees.getIndexKeys
+db.employees.dropIndexes                      db.employees.dropIndex
+db.employees.totalIndexSize                   db.employees.getDB
+db.employees.getMongo                         db.employees.dataSize
+db.employees.storageSize                      db.employees.totalSize
+db.employees.drop                             db.employees.exists
+db.employees.getFullName                      db.employees.getName
+db.employees.runCommand                       db.employees.explain
+db.employees.stats                            db.employees.latencyStats
+db.employees.initializeOrderedBulkOp          db.employees.initializeUnorderedBulkOp
+db.employees.getPlanCache                     db.employees.validate
+db.employees.hideIndex                        db.employees.unhideIndex
+db.employees.getSearchIndexes                 db.employees.createSearchIndex
+db.employees.createSearchIndexes              db.employees.dropSearchIndex
+db.employees.updateSearchIndex
+
+issuetracker> db.employees.find()
+[
+  {
+    _id: ObjectId('658828c266101484ee98fce6'),
+    name: { first: 'John', last: 'Doe' },
+    age: 44
+  }
+]
+issuetracker> db.employees.find().pretty()
+[
+  {
+    _id: ObjectId('658828c266101484ee98fce6'),
+    name: { first: 'John', last: 'Doe' },
+    age: 44
+  }
+]
+issuetracker> show collections
+employees
+issuetracker> show databases
+admin          40.00 KiB
+config        108.00 KiB
+issuetracker   40.00 KiB
+local          72.00 KiB
+issuetracker> db.employees.insertOne({name: {first: 'Jane', last: 'Doe'}, age: 54})
+{
+  acknowledged: true,
+  insertedId: ObjectId('65882a2066101484ee98fce7')
+}
+issuetracker> show collections
+employees
+issuetracker> db.employees.find()
+[
+  {
+    _id: ObjectId('658828c266101484ee98fce6'),
+    name: { first: 'John', last: 'Doe' },
+    age: 44
+  },
+  {
+    _id: ObjectId('65882a2066101484ee98fce7'),
+    name: { first: 'Jane', last: 'Doe' },
+    age: 54
+  }
+]
+issuetracker> let result = db.employees.find().toArray()
+
+issuetracker> result.forEach((e) => print('First Name:', e.name.first))
+First Name: John
+First Name: Jane
+
+issuetracker> result.forEach((e) => printjson(e.name))
+{
+  first: 'John',
+  last: 'Doe'
+}
+{
+  first: 'Jane',
+  last: 'Doe'
+}
+
